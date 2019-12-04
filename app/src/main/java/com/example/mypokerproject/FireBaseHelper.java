@@ -1,11 +1,9 @@
 package com.example.mypokerproject;
 
-import android.nfc.Tag;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.FirebaseError;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -19,7 +17,8 @@ public class FireBaseHelper {
 
     private static final String TAG = "FireBaseHelper";
     private HashMap<String, ArrayList<String>> sessions = new HashMap<String, ArrayList<String>>();
-    private DatabaseReference myref = FirebaseDatabase.getInstance().getReference("sessions");
+    private DatabaseReference myref = FirebaseDatabase.getInstance().getReference();
+    private DatabaseReference g_ref = myref.child("sessions");
 
     public FireBaseHelper(final HashMap<String, ArrayList<String>> sessions, DatabaseReference myref) {
 
@@ -65,7 +64,7 @@ public class FireBaseHelper {
     }
 
     public void createSession(String sessionName) {
-        myref.child(sessionName);
+        g_ref.child(sessionName).setValue(sessionName);
     }
 
     public void createQuestion(String sessionName, String questionName) {
@@ -98,7 +97,6 @@ public class FireBaseHelper {
         myref.child(sessionName).child("questions").child(questionName).child("isActive").setValue(false);
 
     }
-
 
 }
 

@@ -20,7 +20,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import static android.content.Context.MODE_PRIVATE;
 
-public class LoginFrag extends Fragment implements View.OnClickListener {
+public class LoginFrag extends Fragment {
 
     private View myView;
     private Button button;
@@ -31,30 +31,26 @@ public class LoginFrag extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.login_layout, container, false);
         button = (Button) myView.findViewById(R.id.loginBtn);
-        button.setOnClickListener(this);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                txt = (EditText) myView.findViewById(R.id.sessionTxt);
+                String sessionName = txt.toString().trim();
+                if (!TextUtils.isEmpty(sessionName)) {
+
+                    if (!dbHelper.checkSession(sessionName)) {
+                        dbHelper.createSession(sessionName);
+                    }
+                    getActivity().getSharedPreferences(Utils.MY_PREFS_NAME, MODE_PRIVATE).edit().putString("sessionName", sessionName).apply();
+                    //Utils.startFragment(getFragmentManager(),R.id.layoutHolder,QuestionsFragment);
+                } else {
+                    Utils.makeToast(myView.getContext(), "Session field is empty");
+
+                }
+            }
+        });
         return myView;
     }
-
-    @Override
-    public void onClick(View v) {
-        txt = (EditText) myView.findViewById(R.id.sessionTxt);
-        String sessionName = txt.toString().trim();
-        if (!TextUtils.isEmpty(sessionName)) {
-
-              if(!dbHelper.checkSession(sessionName))
-              {
-                   dbHelper.createSession(sessionName);
-              }
-             getActivity().getSharedPreferences(Utils.MY_PREFS_NAME,MODE_PRIVATE).edit().putString("sessionName",sessionName).apply();
-              //Utils.startFragment(getFragmentManager(),R.id.layoutHolder,QuestionsFragment);
-            }
-        else
-        {
-            Utils.makeToast(myView.getContext(),"Session field is empty");
-
-        }
-    }
-
-    }
+}
 
 
